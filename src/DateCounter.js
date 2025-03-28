@@ -26,7 +26,7 @@ export function DateCounter() {
   const {count,step} = state;
   const date = new Date();
   date.setDate(date.getDate() + count);
-  console.log(date);
+  console.log(date); 
 
   function dec() {
     disPatch({type:"dec",payload:-1});
