@@ -13,6 +13,8 @@ import FinishedQuize from "./FinishedQuize.js";
 import Footer from "./Footer.js";
 import Timer from "./Timer.js";
 
+const SEC_PER_QUESTIONS=50;
+
 const initialState = {
   questions: [],
   status: "loading",
@@ -20,6 +22,7 @@ const initialState = {
   answer: null,
   points: 0,
   highscore: 0,
+  secondRemaining: null,
 };
 
 function reducer(state, action) {
@@ -39,6 +42,7 @@ function reducer(state, action) {
       return {
         ...state,
         status: "active",
+        secondRemaining: state.questions.length * SEC_PER_QUESTIONS,
       };
     case "newAnswer":
       const question = state.questions.at(state.index);
@@ -65,14 +69,19 @@ function reducer(state, action) {
       };
     case "restart":
       return { ...initialState, questions: state.questions, status: "ready" };
-
+    case "tick":
+      return {
+        ...state,
+        secondRemaining: state.secondRemaining - 1,
+        status: state.secondRemaining === 0 ? "finished" : state.status
+      }
     default:
       throw new Error("Action Unknown");
   }
 }
 
 function App() {
-  const [{ questions, status, index, answer, points, highscore }, dispatch] =
+  const [{ questions, status, index, answer, points, highscore, secondRemaining }, dispatch] =
     useReducer(reducer, initialState);
 
   const numQuestion = questions.length;
@@ -112,15 +121,17 @@ function App() {
               answer={answer}
             />
             <Footer>
-              <Timer/>
+              <Timer
+                dispatch={dispatch}
+                secondRemaining={secondRemaining}
+              />
               <NextButton
-              dispatch={dispatch}
-              answer={answer}
-              index={index}
-              numQuestion={numQuestion}
-            />
+                dispatch={dispatch}
+                answer={answer}
+                index={index}
+                numQuestion={numQuestion}
+              />
             </Footer>
-            
           </>
         )}
         {status === "finished" && (
