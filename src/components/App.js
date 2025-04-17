@@ -12,135 +12,113 @@ import ProgressBar from "./ProgressBar.js";
 import FinishedQuize from "./FinishedQuize.js";
 import Footer from "./Footer.js";
 import Timer from "./Timer.js";
+import { useQuiz } from "../Context/QuizeContext.js";
 
-const SEC_PER_QUESTIONS=50;
+// const SEC_PER_QUESTIONS=50;
 
-const initialState = {
-  questions: [],
-  status: "loading",
-  index: 0,
-  answer: null,
-  points: 0,
-  highscore: 0,
-  secondRemaining: null,
-};
+// const initialState = {
+//   questions: [],
+//   status: "loading",
+//   index: 0,
+//   answer: null,
+//   points: 0,
+//   highscore: 0,
+//   secondRemaining: null,
+// };
 
-function reducer(state, action) {
-  switch (action.type) {
-    case "dataReceived":
-      return {
-        ...state,
-        questions: action.payload,
-        status: "ready",
-      };
-    case "dataFailed":
-      return {
-        ...state,
-        status: "Failed",
-      };
-    case "start":
-      return {
-        ...state,
-        status: "active",
-        secondRemaining: state.questions.length * SEC_PER_QUESTIONS,
-      };
-    case "newAnswer":
-      const question = state.questions.at(state.index);
-      return {
-        ...state,
-        answer: action.payload,
-        points:
-          action.payload === question.correctOption
-            ? state.points + question.points
-            : state.points,
-      };
-    case "nextQuestion":
-      return {
-        ...state,
-        index: state.index + 1,
-        answer: null,
-      };
-    case "finish":
-      return {
-        ...state,
-        status: "finished",
-        highscore:
-          state.points > state.highscore ? state.points : state.highscore,
-      };
-    case "restart":
-      return { ...initialState, questions: state.questions, status: "ready" };
-    case "tick":
-      return {
-        ...state,
-        secondRemaining: state.secondRemaining - 1,
-        status: state.secondRemaining === 0 ? "finished" : state.status
-      }
-    default:
-      throw new Error("Action Unknown");
-  }
-}
+// function reducer(state, action) {
+//   switch (action.type) {
+//     case "dataReceived":
+//       return {
+//         ...state,
+//         questions: action.payload,
+//         status: "ready",
+//       };
+//     case "dataFailed":
+//       return {
+//         ...state,
+//         status: "Failed",
+//       };
+//     case "start":
+//       return {
+//         ...state,
+//         status: "active",
+//         secondRemaining: state.questions.length * SEC_PER_QUESTIONS,
+//       };
+//     case "newAnswer":
+//       const question = state.questions.at(state.index);
+//       return {
+//         ...state,
+//         answer: action.payload,
+//         points:
+//           action.payload === question.correctOption
+//             ? state.points + question.points
+//             : state.points,
+//       };
+//     case "nextQuestion":
+//       return {
+//         ...state,
+//         index: state.index + 1,
+//         answer: null,
+//       };
+//     case "finish":
+//       return {
+//         ...state,
+//         status: "finished",
+//         highscore:
+//           state.points > state.highscore ? state.points : state.highscore,
+//       };
+//     case "restart":
+//       return { ...initialState, questions: state.questions, status: "ready" };
+//     case "tick":
+//       return {
+//         ...state,
+//         secondRemaining: state.secondRemaining - 1,
+//         status: state.secondRemaining === 0 ? "finished" : state.status
+//       }
+//     default:
+//       throw new Error("Action Unknown");
+//   }
+// }
 
 function App() {
-  const [{ questions, status, index, answer, points, highscore, secondRemaining }, dispatch] =
-    useReducer(reducer, initialState);
+  // const [{ questions, status, index, answer, points, highscore, secondRemaining }, dispatch] =
+  //   useReducer(reducer, initialState);
 
-  const numQuestion = questions.length;
-  const maxPosiblePoints = questions.reduce(
-    (prev, cur) => prev + cur.points,
-    0
-  );
+  // const numQuestion = questions.length;
+  // const maxPosiblePoints = questions.reduce(
+  //   (prev, cur) => prev + cur.points,
+  //   0
+  // );
 
-  useEffect(function () {
-    fetch("http://localhost:9000/questions")
-      .then((res) => res.json())
-      .then((data) => dispatch({ type: "dataReceived", payload: data }))
-      .catch((err) => dispatch({ type: "dataFailed" }));
-  }, []); // Add an empty dependency array to ensure it runs only once
-
+  // useEffect(function () {
+  //   fetch("http://localhost:9000/questions")
+  //     .then((res) => res.json())
+  //     .then((data) => dispatch({ type: "dataReceived", payload: data }))
+  //     .catch((err) => dispatch({ type: "dataFailed" }));
+  // }, []); // Add an empty dependency array to ensure it runs only once
+  const {status} = useQuiz();
   return (
     <div className="app">
       <Header />
-      <ProgressBar
-        index={index}
-        numQuestions={numQuestion}
-        points={points}
-        maxPosiblePoints={maxPosiblePoints}
-        answer={answer}
-      />
+      <ProgressBar/>
       <Main>
         {status === "loading" && <Loader />}
         {status === "error" && <Error />}
         {status === "ready" && (
-          <StartScreen numQuestion={numQuestion} dispatch={dispatch} />
+          <StartScreen/>
         )}
         {status === "active" && (
           <>
-            <Question
-              questionIndex={questions[index]}
-              dispatch={dispatch}
-              answer={answer}
-            />
+            <Question/>
             <Footer>
-              <Timer
-                dispatch={dispatch}
-                secondRemaining={secondRemaining}
-              />
-              <NextButton
-                dispatch={dispatch}
-                answer={answer}
-                index={index}
-                numQuestion={numQuestion}
-              />
+              <Timer/>
+              <NextButton/>
             </Footer>
           </>
         )}
         {status === "finished" && (
-          <FinishedQuize
-            points={points}
-            maxPossiblePoints={maxPosiblePoints}
-            highscore={highscore}
-            dispatch={dispatch}
-          />
+          <FinishedQuize/>
         )}
       </Main>
     </div>
