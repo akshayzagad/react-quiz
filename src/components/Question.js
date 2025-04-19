@@ -2,11 +2,14 @@ import { useQuiz } from "../Context/QuizeContext";
 import Options from "./Options";
 
 export default function Question() {
-  const{ questionIndex } = useQuiz();
+  const{ questions,index } = useQuiz();
+  const question = questions.at(index);
+
+  
   return (
     <div>
-      <h4>{questionIndex.question}</h4>
-      <Options />
+      <h4>{question.question}</h4>
+      <Options question={question}/>
     </div>
   );
 }
