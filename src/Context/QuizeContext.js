@@ -76,17 +76,17 @@ function QuizeProvider({ children }) {
   ] = useReducer(reducer, initialState);
 
   const numQuestion = questions.length;
-    const maxPosiblePoints = questions.reduce(
-      (prev, cur) => prev + cur.points,
-      0
-    );
-  
-    useEffect(function () {
-      fetch("http://localhost:9000/questions")
-        .then((res) => res.json())
-        .then((data) => dispatch({ type: "dataReceived", payload: data }))
-        .catch((err) => dispatch({ type: "dataFailed" }));
-    }, []); // Add an empty dependency array to ensure it runs only once
+  const maxPosiblePoints = questions.reduce(
+    (prev, cur) => prev + cur.points,
+    0
+  );
+
+  useEffect(function () {
+    fetch("http://localhost:9000/questions")
+      .then((res) => res.json())
+      .then((data) => dispatch({ type: "dataReceived", payload: data }))
+      .catch((err) => dispatch({ type: "dataFailed" }));
+  }, []); // Add an empty dependency array to ensure it runs only once
 
   return (
     <QuizeContext.Provider
@@ -100,7 +100,7 @@ function QuizeProvider({ children }) {
         secondRemaining,
         numQuestion,
         maxPosiblePoints,
-        dispatch
+        dispatch,
       }}
     >
       {children}
@@ -108,11 +108,11 @@ function QuizeProvider({ children }) {
   );
 }
 
-function useQuiz(){
-    const context = useContext(QuizeContext);
-     if (context === undefined)
+function useQuiz() {
+  const context = useContext(QuizeContext);
+  if (context === undefined)
     throw new Error("QuizContext was used outside of the QuizProvider");
-  return context; 
+  return context;
 }
 
-export { QuizeProvider,useQuiz };
+export { QuizeProvider, useQuiz };
