@@ -74,19 +74,24 @@ function QuizeProvider({ children }) {
     { questions, status, index, answer, points, highscore, secondRemaining },
     dispatch,
   ] = useReducer(reducer, initialState);
+  const apiUrl =
+    process.env.REACT_APP_API_URL || "http://localhost:9000/questions";
 
   const numQuestion = questions.length;
   const maxPosiblePoints = questions.reduce(
     (prev, cur) => prev + cur.points,
-    0
+    0,
   );
 
-  useEffect(function () {
-    fetch("http://localhost:9000/questions")
-      .then((res) => res.json())
-      .then((data) => dispatch({ type: "dataReceived", payload: data }))
-      .catch((err) => dispatch({ type: "dataFailed" }));
-  }, []); // Add an empty dependency array to ensure it runs only once
+  useEffect(
+    function () {
+      fetch(apiUrl)
+        .then((res) => res.json())
+        .then((data) => dispatch({ type: "dataReceived", payload: data }))
+        .catch((err) => dispatch({ type: "dataFailed" }));
+    },
+    [apiUrl],
+  );
 
   return (
     <QuizeContext.Provider
