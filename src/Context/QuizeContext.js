@@ -78,13 +78,14 @@ function QuizeProvider({ children }) {
   const numQuestions = questions.length;
   const maxPossiblePoints = questions.reduce(
     (prev, cur) => prev + cur.points,
-    0
+    0,
   );
 
   useEffect(function () {
     const apiUrl =
       process.env.REACT_APP_API_URL || "http://localhost:9000/questions";
-
+    console.log("REACT_APP_API_URL:", process.env.REACT_APP_API_URL);
+    console.log("apiUrl:", apiUrl);
     fetch(apiUrl)
       .then((res) => res.json())
       .then((data) => dispatch({ type: "dataReceived", payload: data }))
