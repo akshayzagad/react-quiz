@@ -6,7 +6,9 @@ export default function FinishedQuize() {
   points,
   highscore,
   dispatch} = useQuiz();
-  const percentage = (points / maxPossiblePoints) * 100;
+  const percentage = maxPossiblePoints
+    ? (points / maxPossiblePoints) * 100
+    : 0;
 
   let emoji;
   if (percentage === 100) emoji = "🥇";
@@ -19,7 +21,7 @@ export default function FinishedQuize() {
     <>
       <p className="result">
         <span>{emoji}</span>
-        You scored <strong>{points}</strong> out of {maxPossiblePoints} (
+        You scored <strong>{points}</strong> scored out of {maxPossiblePoints} (
         {Math.ceil(percentage)}%)
       </p>
       <p className="highscore">(Highscore: {highscore} points)</p>

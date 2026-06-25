@@ -3,7 +3,7 @@ import { useQuiz } from "../Context/QuizeContext"
 
 
 export default function ProgressBar() {
-  const {index,numQuestions,points,maxPosiblePoints,answer} = useQuiz();
+  const {index,numQuestions,points,maxPossiblePoints,answer} = useQuiz();
   return (
     <header className="progress">
         <progress max={numQuestions} value={index + (answer !== null)}></progress>
@@ -12,7 +12,7 @@ export default function ProgressBar() {
       </p>
 
       <p>
-      Out of <strong>{points}</strong> / {maxPosiblePoints}
+      Out of <strong>{points}</strong> / {maxPossiblePoints}
       </p>
     </header>
   )

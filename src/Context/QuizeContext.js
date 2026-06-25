@@ -75,14 +75,17 @@ function QuizeProvider({ children }) {
     dispatch,
   ] = useReducer(reducer, initialState);
 
-  const numQuestion = questions.length;
-  const maxPosiblePoints = questions.reduce(
+  const numQuestions = questions.length;
+  const maxPossiblePoints = questions.reduce(
     (prev, cur) => prev + cur.points,
     0
   );
 
   useEffect(function () {
-    fetch("http://localhost:9000/questions")
+    const apiUrl =
+      process.env.REACT_APP_API_URL || "http://localhost:9000/questions";
+
+    fetch(apiUrl)
       .then((res) => res.json())
       .then((data) => dispatch({ type: "dataReceived", payload: data }))
       .catch((err) => dispatch({ type: "dataFailed" }));
@@ -98,8 +101,8 @@ function QuizeProvider({ children }) {
         points,
         highscore,
         secondRemaining,
-        numQuestion,
-        maxPosiblePoints,
+        numQuestions,
+        maxPossiblePoints,
         dispatch,
       }}
     >

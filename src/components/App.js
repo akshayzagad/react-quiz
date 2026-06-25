@@ -2,7 +2,6 @@ import "../index.css";
 // import './DateCounter.js'
 import Header from "./Header.js";
 import Main from "./Main.js";
-import { useEffect, useReducer } from "react";
 import Loader from "./Loader.js";
 import Error from "./Error.js";
 import StartScreen from "./StartScreen.js";
